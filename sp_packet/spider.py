@@ -4,6 +4,10 @@ from bs4 import BeautifulSoup
 from lxml import etree
 
 class spider(object):
+    #私有成员
+    __comment_http_header = 'https://movie.douban.com/subject/'
+    __comment_http_tail = '/comments?start=0&limit='
+
     def __enter__(self):
         return self
 
@@ -20,24 +24,47 @@ class spider(object):
 
     def parse(self, html):
         dom_tree = etree.HTML(html);
-        # links = dom_tree.xpath("//div[@id='nowplaying']");
-        #
-        # moves = {}
-        # for link in links:
-        #     items = link.xpath("//ul[@class='lists']")
-        #     for item in items:
-        #         value = item.xpath("//li[@data-title]");
-        #         print value
-
-        #'//div[@id="content_right"]/div[@class="content_list"]/ul/li[div]'
-
-        #links = dom_tree.xpath("//div[@id='nowplaying']//ul[@class='lists']/li[@data-title]");
-
         links = dom_tree.xpath("//div[@class='mod-bd']/ul[@class='lists']/li")
-        moves = {}
+        moves = []
         for link in links:
-            value = link.xpath("attribute::data-title")[0]
-            print value
+            content = {}
+            data_title = link.xpath("attribute::data-title")
+            if [] == data_title:
+                continue
+            content['data-title'] = data_title[0]
 
+            content['data-score'] = '#'
+            value = link.xpath("attribute::data-score")
+            if value:
+                content['data-score']=value[0]
 
-        return links
+            content['data-star'] = '#'
+            value = link.xpath("attribute::data-star")
+            if value:
+                content['data-star']=value[0]
+
+            content['data-region'] = '#'
+            value = link.xpath("attribute::data-region")
+            if value:
+                content['data-region']=value[0]
+
+            content['data-subject'] = '#'
+            value = link.xpath("attribute::data-subject")
+            if value:
+                content['data-subject']=value[0]
+
+            moves.append(content)
+        return moves
+
+    def get_comment(self, data_subject, limit):
+        http = self.__comment_http_header + data_subject + self.__comment_http_tail + str(limit)
+        html = self.get(http)
+
+        dom_tree = etree.HTML(html)
+        links = dom_tree.xpath("//div[@class='comment']/p[@class]")
+        comment = []
+        for link in links:
+            value = link.xpath("child::text()")
+            if value:
+                comment.append(value[0])
+        return comment

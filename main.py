@@ -1,4 +1,5 @@
 from sp_packet import spider
+from sp_packet import parse
 
 def excute():
     url = 'https://user.qzone.qq.com/446868355'
@@ -6,11 +7,14 @@ def excute():
     s = spider.spider()
 
     content = s.get(url)
+    moves = s.parse(content)
+    print moves
 
-    print content
+    p = parse.parse()
+    comments = p.get_comment(moves)
+    print comments
 
-    lable = s.parse(content)
-
+    return
 
 excute()
 
