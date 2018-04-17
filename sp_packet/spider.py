@@ -2,6 +2,7 @@
 import requests
 from bs4 import BeautifulSoup
 from lxml import etree
+import re
 
 class spider(object):
     #私有成员
@@ -62,9 +63,10 @@ class spider(object):
 
         dom_tree = etree.HTML(html)
         links = dom_tree.xpath("//div[@class='comment']/p[@class]")
-        comment = []
+        comment = ''
         for link in links:
             value = link.xpath("child::text()")
             if value:
-                comment.append(value[0])
+                value = re.sub("[\s+\.\!\/_,$%^*(+\"\']+|[+——！，。？、~@#￥%……&*（）]+".decode("utf8"), "".decode("utf8"),value[0])
+                comment += value
         return comment

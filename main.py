@@ -14,7 +14,8 @@ def excute():
     comments = p.get_comment(moves)
     print comments
 
-    return
+    for (key, value) in comments.items():
+        p.parse_word(key, value)
 
 excute()
 
