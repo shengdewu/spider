@@ -2,6 +2,8 @@
 import requests
 from bs4 import BeautifulSoup
 from lxml import etree
+import random
+
 import re
 
 class spider(object):
@@ -13,15 +15,32 @@ class spider(object):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        print 'exc_type: '+ exc_type + ' ,exc_val:' + exc_val +', exc_tb: '+exc_tb
+        print('exc_type: '+ exc_type + ' ,exc_val:' + exc_val +', exc_tb: '+exc_tb)
 
     def __init__(self):
         return
 
     def get(self, url):
-        context = requests.get(url)
-        context = context.content.decode('utf-8')
-        return context
+        try:
+            header = {
+                # 'Host': "www.xicidaili.com",  # 需要修改
+                # "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                # "Accept-Encoding": "gzip, deflate",
+                # "Accept-Language": "en-US,en;q=0.5",
+                # "Connection": "keep-alive",
+                "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0\\r\\"
+            }
+            proxy_ip = ['172.16.6.15', '172.16.6.16', '172.16.6.17', '172.16.6.18', '172.16.6.19', '172.16.6.20']
+            ip = {'http': random.choice(proxy_ip)}
+            context = requests.get(url, proxies=ip,headers=header)
+            context = context.content.decode('utf-8')
+            return context
+        except requests.HTTPError as code:
+            print("request is failed:" + str(code))
+        except requests.ConnectionError as code:
+            print("request is failed:" + str(code))
+        return
+
 
     def parse(self, html):
         dom_tree = etree.HTML(html);
@@ -67,6 +86,6 @@ class spider(object):
         for link in links:
             value = link.xpath("child::text()")
             if value:
-                value = re.sub("[\s+\.\!\/_,$%^*(+\"\']+|[+——！，。？、~@#￥%……&*（）]+".decode("utf8"), "".decode("utf8"),value[0])
-                comment += value
+                #value = re.sub("[\s+\.\!\/_,$%^*(+\"\']+|[+——！，。？、~@#￥%……&*（）]+".decode("utf-8"), "".decode("utf-8"),value[0])
+                comment += value[0]
         return comment

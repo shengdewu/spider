@@ -1,4 +1,4 @@
-import spider
+from sp_packet import spider
 import jieba
 import pandas as pd
 
@@ -21,5 +21,5 @@ class parse(object):
         stopwords = pd.read_csv("./stopwords.txt", index_col=False, quoting=3, sep="\t", names=['stopword'],
                                 encoding='utf-8')
         word = word[word.segment.isin(stopwords.stopword)]
-        print word.head()
+        print(word.head())
         return

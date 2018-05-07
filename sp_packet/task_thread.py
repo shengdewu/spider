@@ -11,20 +11,23 @@ class task_thread(Process):
         return
 
     def run(self):
-        print "moduel name " + __name__ + ", pid " + str(os.getpid())
+        print("moduel name " + __name__ + ", pid " + str(os.getpid()))
 
         s = spider.spider()
 
         content = s.get(self.__url)
         moves = s.parse(content)
-        print moves
+        print(moves)
 
         p = parse.parse()
         comments = p.get_comment(moves)
-        print comments
+        print(comments)
 
         self.__queue.put(comments);
-        for (key, value) in comments.items():
-            p.parse_word(key, value)
+        # for (key, value) in comments.items():
+        #     p.parse_word(key, value)
+
+        print("moduel name " + __name__ + ", pid " + str(os.getpid()) + 'eeeeeend.....')
+
         return
 
