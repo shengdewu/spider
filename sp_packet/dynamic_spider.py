@@ -14,7 +14,7 @@ class Monitor(object):
     同时设置chrome为屏蔽图片，若需要抓取图片可自行修改
     """
     PROXY_PATH = path.abspath("./browsermob-proxy-2.1.4/bin/browsermob-proxy.bat")
-    CHROME_PATH = path.abspath("./web_driver/chromedriver.exe")
+    CHROME_PATH = path.abspath("./web_driver/geckodriver.exe")
     CHROME_OPTIONS = {"profile.managed_default_content_settings.images": 2}
 
     def __init__(self):
@@ -40,10 +40,10 @@ class Monitor(object):
         step 5 初始化selenium， chrome设置
         将chrome的代理设置为browermobproxy新建的代理地址
         """
-        chromeSettings = webdriver.ChromeOptions()
-        #chromeSettings.add_argument('--proxy-server={host}:{port}'.format(host="localhost", port=self.proxy.port))
-        chromeSettings.add_experimental_option("prefs", self.CHROME_OPTIONS)
-        self.driver = webdriver.Chrome(executable_path=self.CHROME_PATH, chrome_options=chromeSettings)
+        profile = webdriver.FirefoxProfile()
+        profile.set_proxy(self.proxy.selenium_proxy())
+        self.driver = webdriver.Firefox(firefox_profile=profile, executable_path=self.CHROME_PATH)
+
 
     def genNewRecord(self, name="monitor", options={'captureContent': True}):
         """

@@ -46,5 +46,5 @@ def excute():
     return
 
 if __name__ == '__main__':
-    dynamic_spider.test_browser()
+    dynamic_spider.test()
 
