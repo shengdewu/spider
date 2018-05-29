@@ -56,15 +56,19 @@ class Monitor(object):
         step 7 简单的获取目标数据的函数
         其中 targetUrl 为浏览器获取对应数据调用的url，需要用正则表达式表示
         """
-        if self.proxy.har['log']['entries']:
-            for loop_record in self.proxy.har['log']['entries']:
-                try:
-                    if re.fullmatch(targetUrl, loop_record["request"]['url']):
-                        return loop_record["response"]['content']["text"]
-                except Exception as err:
-                    print(err)
-                    continue
-        return None
+        self.proxy.wait_for_traffic_to_stop(1, 60)
+
+        return self.proxy.har
+
+        # if self.proxy.har['log']['entries']:
+        #     for loop_record in self.proxy.har['log']['entries']:
+        #         try:
+        #             if re.fullmatch(targetUrl, loop_record["request"]['url']):
+        #                 return loop_record["response"]['content']["text"]
+        #         except Exception as err:
+        #             print(err)
+        #             continue
+        # return None
 
     def Start(self):
         """step 8 配置monitor的启动顺序"""
@@ -103,7 +107,7 @@ def test_browser():
     driver = webdriver.Firefox(firefox_profile=profile, executable_path=FIREFOX_PATH)
 
     proxy.new_har("baidu")
-    driver.get("http://www.baidu.com")
+    driver.get("https://s.taobao.com/search?q=薯条")
     proxy.wait_for_traffic_to_stop(1, 60)
     # with open('1.har', 'w') as outfile:
     #     json.dump(proxy.har, outfile)
@@ -122,6 +126,7 @@ def test():
     targetUrl = "https://s.taobao.com/api.*?"
     text = monitor.getContentText(targetUrl)
 
+    print(text)
     monitor.Quit()
 
     return

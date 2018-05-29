@@ -3,6 +3,7 @@ from sp_packet import parse
 from sp_packet import task_thread
 from multiprocessing import Queue
 from sp_packet import dynamic_spider
+from sp_packet import task_process
 
 def excute():
     url = 'https://user.qzone.qq.com/446868355'
@@ -46,5 +47,6 @@ def excute():
     return
 
 if __name__ == '__main__':
-    dynamic_spider.test()
+    #dynamic_spider.test_browser()
+    task_process.test()
 
